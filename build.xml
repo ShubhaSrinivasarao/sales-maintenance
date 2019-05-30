@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sales-maintenance" basedir="." default="junit-test">
+
+	<property name="out" value="out"/>
+
+	<property name="test.src" value="test"/>
+    <property name="test.lib" value="lib"/>
+    <property name="test.resources" value="config"/>
+    <property name="test.classes" value="${out}/test/${ant.project.name}"/>
+
+	<available file="${out}" property="outputExists"/>
+	
+	<target name="create" description="create the output directories" unless="outputExists">
+        <mkdir dir="${production.classes}"/>
+        <mkdir dir="${test.classes}"/>
+        <mkdir dir="${reports.out}"/>
+        <mkdir dir="${junit.out}"/>
+        <mkdir dir="${testng.out}"/>
+        <mkdir dir="${exploded.classes}"/>
+        <mkdir dir="${exploded.lib}"/>
+    </target>
+	
+	<target name="compile" description="compile all .java source files" depends="create">
+        <!-- Debug output
+                <property name="production.class.path" refid="production.class.path"/>
+                <echo message="${production.class.path}"/>
+        -->
+        <javac srcdir="src" destdir="${out}/production/${ant.project.name}" debug="on" source="${version}">
+            <classpath refid="production.class.path"/>
+            <include name="**/*.java"/>
+            <exclude name="**/*Test.java"/>
+        </javac>
+        <javac srcdir="${test.src}" destdir="${out}/test/${ant.project.name}" debug="on" source="${version}">
+            <classpath refid="test.class.path"/>
+            <include name="**/*Test.java"/>
+        </javac>
+    </target>
+	
+	<target name="junit-test" description="run all junit tests" depends="compile">
+        <!-- Debug output
+                <property name="test.class.path" refid="test.class.path"/>
+                <echo message="${test.class.path}"/>
+        -->
+        <junit printsummary="yes" haltonfailure="${haltonfailure}">
+            <classpath refid="test.class.path"/>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${junit.out}">
+                <fileset dir="${test.src}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+        <junitreport todir="${junit.out}">
+            <fileset dir="${junit.out}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${junit.out}" format="frames"/>
+        </junitreport>
+    </target>
+</project>
