@@ -32,7 +32,7 @@ node {
 
     stage('clean') {
 		if (isUnix()) {
-			sh label: '', script: 'chmod 777 .'
+			sh label: '', script: 'chmod 777 ./mvnw'
 			sh "./mvnw clean"
 		} else {
 			bat label: '', script: './mvnw clean'
