@@ -59,8 +59,8 @@ node {
 		def scannerHome = tool 'sonar';
 		withSonarQubeEnv('sonar') {
 			if (isUnix()) {
-				//sh script: "${scannerHome}/bin/sonar-scanner"
-				sh script: "${mvnHome}/bin/mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar"
+				//sh script: "${scannerHome}/bin/sonar-scanner"	
+				echo 'Not implemented'				
 			} else {
 				//using sonar-scanner which requires sonar.properties file in the project path
 				//bat script: "${scannerHome}/bin/sonar-scanner"
@@ -94,21 +94,24 @@ node {
     }
 	
 	stage ('Artifactory configuration') {
+		if (isUnix()) {
+			echo 'Not implemented'
+		} else {
+			rtMavenResolver id: "MAVEN_RESOLVER", serverId: 'Artifactory-local', releaseRepo: 'maven-release', snapshotRepo: 'maven-virtual'
 		
-		rtMavenResolver id: "MAVEN_RESOLVER", serverId: 'Artifactory-local', releaseRepo: 'maven-release', snapshotRepo: 'maven-virtual'
-	
-		rtMavenDeployer id: "MAVEN_DEPLOYER",serverId: 'Artifactory-local', releaseRepo: 'maven-release-local', snapshotRepo: 'maven-local'
+			rtMavenDeployer id: "MAVEN_DEPLOYER",serverId: 'Artifactory-local', releaseRepo: 'maven-release-local', snapshotRepo: 'maven-local'
 
-		rtMavenRun (
-			tool: 'apache-maven-3.3.9', // Tool name from Jenkins configuration
-			pom: 'pom.xml',
-			goals: 'clean install',
-			deployerId: "MAVEN_DEPLOYER",
-			resolverId: "MAVEN_RESOLVER"
-		)
-		rtPublishBuildInfo (
-			serverId: "Artifactory-local"
-		)					
+			rtMavenRun (
+				tool: 'apache-maven-3.3.9', // Tool name from Jenkins configuration
+				pom: 'pom.xml',
+				goals: 'clean install',
+				deployerId: "MAVEN_DEPLOYER",
+				resolverId: "MAVEN_RESOLVER"
+			)
+			rtPublishBuildInfo (
+				serverId: "Artifactory-local"
+			)					
+		}
 	}
 }
 
