@@ -59,7 +59,8 @@ node {
 		def scannerHome = tool 'sonar';
 		withSonarQubeEnv('sonar') {
 			if (isUnix()) {
-				sh script: "${scannerHome}/bin/sonar-scanner"
+				//sh script: "${scannerHome}/bin/sonar-scanner"
+				sh script: "${mvnHome}/bin/mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar"
 			} else {
 				//using sonar-scanner which requires sonar.properties file in the project path
 				//bat script: "${scannerHome}/bin/sonar-scanner"
