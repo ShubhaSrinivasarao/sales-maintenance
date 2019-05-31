@@ -32,6 +32,7 @@ node {
 
     stage('clean') {
 		if (isUnix()) {
+			sh "sudo chmod 777 ."
 			sh "./mvnw clean"
 		} else {
 			bat label: '', script: './mvnw clean'
