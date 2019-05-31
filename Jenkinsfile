@@ -70,16 +70,20 @@ node {
 	  }
 	  
 	  stage("Quality Gate") {
-		withSonarQubeEnv('sonar') {
-			// Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-			// true = set pipeline to UNSTABLE, false = don't
-			// Requires SonarQube Scanner for Jenkins 2.7+
-			//waitForQualityGate abortPipeline: true
-			
-			def qg = waitForQualityGate() 
-			if (qg.status != 'OK') {
-				error "Pipeline aborted due to quality gate failure: ${qg.status}"
-			} 
+		  if (isUnix()) {
+			echo 'Not implemented'	
+		  } else {
+			withSonarQubeEnv('sonar') {
+				// Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+				// true = set pipeline to UNSTABLE, false = don't
+				// Requires SonarQube Scanner for Jenkins 2.7+
+				//waitForQualityGate abortPipeline: true
+				
+				def qg = waitForQualityGate() 
+				if (qg.status != 'OK') {
+					error "Pipeline aborted due to quality gate failure: ${qg.status}"
+				} 
+			}
 		}
 	}
 	
